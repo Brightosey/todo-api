@@ -5,6 +5,7 @@ import { check, validationResult } from "express-validator";
 const router = express.Router();
 
 router.get("/", async (_req, res) => {
+  console.log("GET /tasks hit!");
   try {
     const tasks = await db("tasks")
       .select("id", "title", "description", "priority", "status", "created_at")
@@ -12,6 +13,7 @@ router.get("/", async (_req, res) => {
 
     return res.status(200).json(tasks);
   } catch (error) {
+    console.error("GET /tasks error:", error);
     return res.status(500).json({ message: "Error retrieving tasks" });
   }
 });
@@ -30,6 +32,8 @@ router.get("/:id", async (req, res) => {
         .status(404)
         .json({ message: `task with ${id} can't be found` });
     }
+
+    return res.status(200).json(tasks);
   } catch (error) {
     return res
       .status(500)
@@ -77,5 +81,40 @@ router.post(
     }
   }
 );
+
+router.patch("/:id", async (req, res) => {
+  const { id } = req.params;
+  const { status, priority } = req.body;
+
+  try {
+    const tasks = await db("tasks").where({ id }).first();
+    if (!tasks) {
+      return res.status(404).json({ message: `task with ${id} not found` });
+    }
+
+    await db("tasks").where({ id }).update({ status, priority });
+
+    return res.status(200).json({ message: "Task updated successfully" });
+  } catch (error) {
+    return res.status(500).json({ message: "Error updating task" });
+  }
+});
+
+router.delete("/:id", async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const tasks = await db("tasks").where({ id }).first();
+    if (!tasks) {
+      return res.status(404).json({ message: `task with ${id} not found` });
+    }
+
+    await db("tasks").where({ id }).del();
+
+    return res.status(200).json({ message: "Task deleted successfully" });
+  } catch (error) {
+    return res.status(500).json({ message: "Error deleting task" });
+  }
+});
 
 export default router;
