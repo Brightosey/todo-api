@@ -84,7 +84,7 @@ router.post(
 
 router.patch("/:id", async (req, res) => {
   const { id } = req.params;
-  const { status, priority } = req.body;
+  const { status, priority, title, description } = req.body;
 
   try {
     const tasks = await db("tasks").where({ id }).first();
@@ -92,7 +92,7 @@ router.patch("/:id", async (req, res) => {
       return res.status(404).json({ message: `task with ${id} not found` });
     }
 
-    await db("tasks").where({ id }).update({ status, priority });
+    await db("tasks").where({ id }).update({ status, priority, title, description });
 
     return res.status(200).json({ message: "Task updated successfully" });
   } catch (error) {
