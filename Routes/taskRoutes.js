@@ -8,7 +8,7 @@ router.get("/", async (_req, res) => {
   console.log("GET /tasks hit!");
   try {
     const tasks = await db("tasks")
-      .select("id", "title", "description", "priority", "status", "created_at")
+      .select("id", "title", "description", "priority", "status", "deadline", "created_at")
       .orderBy("created_at", "desc");
 
     return res.status(200).json(tasks);
@@ -23,7 +23,7 @@ router.get("/:id", async (req, res) => {
 
   try {
     const tasks = await db("tasks")
-      .select("id", "title", "description", "priority", "status", "created_at")
+      .select("id", "title", "description", "priority", "status", "deadline", "created_at")
       .where({ id })
       .first();
 
@@ -62,9 +62,11 @@ router.post(
     const {
       title,
       description = "",
-      priority = "medium",
-      status = "pending",
+      priority,
+      status,
+      deadline = "2025-08-10T00:00:00"
     } = req.body;
+
 
     try {
       const [newTaskId] = await db("tasks").insert({
@@ -72,6 +74,7 @@ router.post(
         description,
         priority,
         status,
+        deadline,
       });
 
       const newTask = await db("tasks").where({ id: newTaskId }).first();
@@ -84,7 +87,7 @@ router.post(
 
 router.patch("/:id", async (req, res) => {
   const { id } = req.params;
-  const { status, priority, title, description } = req.body;
+  const { status, priority, title, description, deadline } = req.body;
 
   try {
     const tasks = await db("tasks").where({ id }).first();
@@ -92,7 +95,9 @@ router.patch("/:id", async (req, res) => {
       return res.status(404).json({ message: `task with ${id} not found` });
     }
 
-    await db("tasks").where({ id }).update({ status, priority, title, description });
+    await db("tasks")
+      .where({ id })
+      .update({ status, priority, title, description, deadline });
 
     return res.status(200).json({ message: "Task updated successfully" });
   } catch (error) {

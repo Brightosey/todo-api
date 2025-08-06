@@ -7,22 +7,24 @@ export const seed = async function (knex) {
       description: "Implement dark/light theme switcher",
       priority: "high",
       status: "pending",
-      created_at: new Date(),
+      deadline: "2025-08-08 17:00:00",
+      created_at: knex.fn.now(),
     },
     {
       title: "Finish drag & drop",
       description: "Enable task reordering",
       priority: "medium",
       status: "in-progress",
-      created_at: new Date(),
+      deadline: "2025-08-06 09:30:00",
+      created_at: knex.fn.now(),
     },
     {
       title: "Deploy app",
       description: "Push frontend to Vercel, backend to Render",
       priority: "low",
       status: "completed",
-      created_at: new Date(),
+      deadline: "2025-08-01 20:00:00",
+      created_at: knex.fn.now(),
     },
   ]);
 };
-

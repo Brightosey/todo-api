@@ -3,8 +3,9 @@ export function up(knex) {
     table.increments("id").primary();
     table.string("title");
     table.text("description");
-    table.string("priority").defaultTo("medium");
-    table.string("status").defaultTo("pending");
+    table.string("priority")
+    table.string("status")
+    table.dateTime('deadline').nullable();
     table.timestamp("created_at").defaultTo(knex.fn.now());
   });
 }
