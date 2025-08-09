@@ -86,6 +86,7 @@ router.post(
 );
 
 router.patch("/:id", async (req, res) => {
+  console.log("Incoming PATCH:", req.body);
   const { id } = req.params;
   const { status, priority, title, description, deadline } = req.body;
 
@@ -101,6 +102,7 @@ router.patch("/:id", async (req, res) => {
 
     return res.status(200).json({ message: "Task updated successfully" });
   } catch (error) {
+    console.error("🔥 PATCH ERROR:", error);
     return res.status(500).json({ message: "Error updating task" });
   }
 });
