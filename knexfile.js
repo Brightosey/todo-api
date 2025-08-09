@@ -1,4 +1,4 @@
-import "dotenv/config";
+/* import "dotenv/config";
 
 
 const configuration = {
@@ -9,6 +9,27 @@ const configuration = {
     password: process.env.DATABASE_PASSWORD,
     database: process.env.DATABASE_NAME,
     port: process.env.DATABASE_PORT,
+  },
+  migrations: {
+    directory: "./migrations",
+  },
+  seeds: {
+    directory: "./seeds",
+  },
+};
+
+export default configuration;
+ */
+
+import "dotenv/config";
+
+const configuration = {
+  client: "pg",
+  connection: {
+    connectionString: process.env.DATABASE_URL,
+    ssl: {
+      rejectUnauthorized: false,
+    },
   },
   migrations: {
     directory: "./migrations",
