@@ -8,7 +8,15 @@ router.get("/", async (_req, res) => {
   console.log("GET /tasks hit!");
   try {
     const tasks = await db("tasks")
-      .select("id", "title", "description", "priority", "status", "deadline", "created_at")
+      .select(
+        "id",
+        "title",
+        "description",
+        "priority",
+        "status",
+        "deadline",
+        "created_at"
+      )
       .orderBy("created_at", "desc");
 
     return res.status(200).json(tasks);
@@ -23,7 +31,15 @@ router.get("/:id", async (req, res) => {
 
   try {
     const tasks = await db("tasks")
-      .select("id", "title", "description", "priority", "status", "deadline", "created_at")
+      .select(
+        "id",
+        "title",
+        "description",
+        "priority",
+        "status",
+        "deadline",
+        "created_at"
+      )
       .where({ id })
       .first();
 
@@ -64,12 +80,11 @@ router.post(
       description = "",
       priority,
       status,
-      deadline = "2025-08-10T00:00:00"
+      deadline = "2025-08-10T00:00:00",
     } = req.body;
 
-
     try {
-      const [newTaskId] = await db("tasks").insert({
+      /*  const [newTaskId] = await db("tasks").insert({
         title,
         description,
         priority,
@@ -78,8 +93,35 @@ router.post(
       });
 
       const newTask = await db("tasks").where({ id: newTaskId }).first();
+      return res.status(201).json(newTask); */
+      const insertedRows = await db("tasks")
+        .insert({
+          title,
+          description,
+          priority,
+          status,
+          deadline,
+        })
+        .returning("id");
+
+      const newTaskId = insertedRows[0].id;
+
+      const newTask = await db("tasks")
+        .select(
+          "id",
+          "title",
+          "description",
+          "priority",
+          "status",
+          "deadline",
+          "created_at"
+        )
+        .where({ id: newTaskId })
+        .first();
+
       return res.status(201).json(newTask);
     } catch (error) {
+      console.log(error);
       return res.status(500).json({ message: "Failed to create task" });
     }
   }
