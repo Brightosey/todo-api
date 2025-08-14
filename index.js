@@ -17,14 +17,9 @@ app.use((req, res, next) => {
 
 app.use("/api/tasks", taskRoutes);
 
-/* app.get("/", (_req, res) => {
+app.get("/", (_req, res) => {
   res.send("welcome to my todo-app");
-}); */
-
-app.get("/debug/env", (req, res) => {
-  res.json({
-    DATABASE_URL: process.env.DATABASE_URL ? "Exists" : "Missing"
-  });
 });
+
 
 app.listen(PORT, () => console.log(`server is running on ${PORT}`));
