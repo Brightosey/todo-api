@@ -1,6 +1,6 @@
 import db from "../db.js";
 import express from "express";
-import { body, check, validationResult } from "express-validator";
+import { body, validationResult } from "express-validator";
 
 const router = express.Router();
 
@@ -60,25 +60,14 @@ router.get("/:id", async (req, res) => {
 router.post(
   "/",
   [
-    check("title").notEmpty().withMessage("Title Required"),
-    check("description").optional().isString(),
-    check("priority")
-      .isIn(["low", "medium", "high"])
-      .withMessage("Priority must be low, medium or high"),
-    check("status")
-      .isIn(["pending", "in-progress", "completed"])
-      .withMessage("Status must be pending, in-progress or completed"),
-  ],
-  [
-    body("title").notEmpty().withMessage("Title Required"),
-
+    body("title").trim().notEmpty().withMessage("Title Required"),
     body("description").optional().isString(),
-
     body("priority")
+      .customSanitizer((v) => String(v).toLowerCase().trim())
       .isIn(["low", "medium", "high"])
       .withMessage("Priority must be low, medium or high"),
-
     body("status")
+      .customSanitizer((v) => String(v).toLowerCase().trim())
       .isIn(["pending", "in-progress", "completed"])
       .withMessage("Status must be pending, in-progress or completed"),
   ],
