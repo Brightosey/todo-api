@@ -1,6 +1,6 @@
 import db from "../db.js";
 import express from "express";
-import { check, validationResult } from "express-validator";
+import { body, check, validationResult } from "express-validator";
 
 const router = express.Router();
 
@@ -66,6 +66,19 @@ router.post(
       .isIn(["low", "medium", "high"])
       .withMessage("Priority must be low, medium or high"),
     check("status")
+      .isIn(["pending", "in-progress", "completed"])
+      .withMessage("Status must be pending, in-progress or completed"),
+  ],
+  [
+    body("title").notEmpty().withMessage("Title Required"),
+
+    body("description").optional().isString(),
+
+    body("priority")
+      .isIn(["low", "medium", "high"])
+      .withMessage("Priority must be low, medium or high"),
+
+    body("status")
       .isIn(["pending", "in-progress", "completed"])
       .withMessage("Status must be pending, in-progress or completed"),
   ],
